@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2020.2.10),
-    on Tue Jan 12 13:16:57 2021
+    on Sun Jan 17 18:03:17 2021
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -69,7 +69,7 @@ filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expNa
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
     extraInfo=expInfo, runtimeInfo=None,
-    originPath='/Users/llevinson/Google Drive UW/SCH_Anxiety_Tasks/Emotion/EmotionTask_lastrun.py',
+    originPath='/Users/llevinson/Documents/SCH_Anxiety_Tasks/Emotion/EmotionTask_lastrun.py',
     savePickle=True, saveWideText=True,
     dataFileName=filename)
 # save a log file for detail verbose info
@@ -85,7 +85,7 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 win = visual.Window(
     size=[1440, 900], fullscr=True, screen=0, 
     winType='pyglet', allowGUI=False, allowStencil=False,
-    monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
+    monitor='testMonitor', color=[1, 1, 1], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
     units='height')
 # store frame rate of monitor if we can measure it
@@ -104,33 +104,33 @@ tot_trials = visual.Slider(win=win, name='tot_trials',
     size=(1.0, 0.05), pos=(0, 0.25), units=None,
     labels=[str(numtrls_tot_opts[i]) for i in list(range(4))], ticks=[0, 1, 2, 3],
     granularity=1, style=['rating'],
-    color='white', font='HelveticaBold',
+    color='black', font='HelveticaBold',
     flip=False, depth=-1)
 exp_blocks = visual.Slider(win=win, name='exp_blocks',
     size=(1.0, 0.05), pos=(0, 0), units=None,
     labels=[str(numruns_opts[i]) for i in list(range(3))], ticks=[0, 1, 2],
     granularity=1, style=['radio'],
-    color='white', font='HelveticaBold',
+    color='black', font='HelveticaBold',
     flip=False, depth=-2)
 trl_label = visual.TextStim(win=win, name='trl_label',
     text='# of Trials (default ' + str(numtrls_tot_opts[3]) +')',
     font='Arial',
     pos=(0, .31), height=0.05, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-3.0);
 block_label = visual.TextStim(win=win, name='block_label',
     text='# of Blocks (default ' + str(numruns_opts[1]) + ')',
     font='Arial',
     pos=(0, 0.06), height=0.05, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-4.0);
 report_label = visual.TextStim(win=win, name='report_label',
     text='default text',
     font='Arial',
     pos=(0, -.2), height=0.05, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-5.0);
 done = visual.TextStim(win=win, name='done',
@@ -147,10 +147,10 @@ done_click.mouseClock = core.Clock()
 # Initialize components for Routine "instructions"
 instructionsClock = core.Clock()
 instructions_text = visual.TextStim(win=win, name='instructions_text',
-    text='This is how to do it.\n\nClick anywhere when ready.',
+    text='Press the space bar when you see a house.\n\nClick anywhere when ready.',
     font='Arial',
     pos=(0, 0), height=0.1, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=0.0);
 mouse = event.Mouse(win=win)
@@ -159,13 +159,14 @@ mouse.mouseClock = core.Clock()
 
 # Initialize components for Routine "pre"
 preClock = core.Clock()
-pre_baseline = visual.TextStim(win=win, name='pre_baseline',
-    text='+',
-    font='Arial',
-    pos=(0, 0), height=0.1, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
-    languageStyle='LTR',
-    depth=0.0);
+fix_cross = visual.ImageStim(
+    win=win,
+    name='fix_cross', 
+    image='Images/fix_cross.png', mask=None,
+    ori=0, pos=(0, 0), size=(0.05, 0.05),
+    color=[1,1,1], colorSpace='rgb', opacity=1,
+    flipHoriz=False, flipVert=False,
+    texRes=512, interpolate=True, depth=-1.0)
 
 # Initialize components for Routine "test"
 testClock = core.Clock()
@@ -173,11 +174,14 @@ image = visual.ImageStim(
     win=win,
     name='image', 
     image='sin', mask=None,
-    ori=0, pos=(0, 0), size=(0.5, 0.5),
+    ori=0, pos=(0, 0), size=(0.4, 0.4),
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=512, interpolate=True, depth=0.0)
 key_resp = keyboard.Keyboard()
+sound_1 = sound.Sound('A', secs=0.1, stereo=True, hamming=True,
+    name='sound_1')
+sound_1.setVolume(1)
 
 # Initialize components for Routine "post"
 postClock = core.Clock()
@@ -195,7 +199,7 @@ completed_text = visual.TextStim(win=win, name='completed_text',
     text='default text',
     font='Arial',
     pos=(0, 0), height=0.1, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=0.0);
 cont = event.Mouse(win=win)
@@ -532,7 +536,7 @@ for thisBlock in blocks:
         rand_t = (random()*0.2)+1.4;
         loc_sub = split_list[blocks.thisRepN];
         # keep track of which components have finished
-        preComponents = [pre_baseline]
+        preComponents = [fix_cross]
         for thisComponent in preComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -555,22 +559,22 @@ for thisBlock in blocks:
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
             
-            # *pre_baseline* updates
-            if pre_baseline.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+            # *fix_cross* updates
+            if fix_cross.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
                 # keep track of start time/frame for later
-                pre_baseline.frameNStart = frameN  # exact frame index
-                pre_baseline.tStart = t  # local t and not account for scr refresh
-                pre_baseline.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(pre_baseline, 'tStartRefresh')  # time at next scr refresh
-                pre_baseline.setAutoDraw(True)
-            if pre_baseline.status == STARTED:
+                fix_cross.frameNStart = frameN  # exact frame index
+                fix_cross.tStart = t  # local t and not account for scr refresh
+                fix_cross.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(fix_cross, 'tStartRefresh')  # time at next scr refresh
+                fix_cross.setAutoDraw(True)
+            if fix_cross.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > pre_baseline.tStartRefresh + 0.5-frameTolerance:
+                if tThisFlipGlobal > fix_cross.tStartRefresh + 0.5-frameTolerance:
                     # keep track of stop time/frame for later
-                    pre_baseline.tStop = t  # not accounting for scr refresh
-                    pre_baseline.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pre_baseline, 'tStopRefresh')  # time at next scr refresh
-                    pre_baseline.setAutoDraw(False)
+                    fix_cross.tStop = t  # not accounting for scr refresh
+                    fix_cross.frameNStop = frameN  # exact frame index
+                    win.timeOnFlip(fix_cross, 'tStopRefresh')  # time at next scr refresh
+                    fix_cross.setAutoDraw(False)
             
             # check for quit (typically the Esc key)
             if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -593,8 +597,8 @@ for thisBlock in blocks:
         for thisComponent in preComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
-        trials.addData('pre_baseline.started', pre_baseline.tStartRefresh)
-        trials.addData('pre_baseline.stopped', pre_baseline.tStopRefresh)
+        trials.addData('fix_cross.started', fix_cross.tStartRefresh)
+        trials.addData('fix_cross.stopped', fix_cross.tStopRefresh)
         
         # ------Prepare to start Routine "test"-------
         continueRoutine = True
@@ -604,8 +608,10 @@ for thisBlock in blocks:
         key_resp.keys = []
         key_resp.rt = []
         _key_resp_allKeys = []
+        sound_1.setSound('A', secs=0.1, hamming=True)
+        sound_1.setVolume(1, log=False)
         # keep track of which components have finished
-        testComponents = [image, key_resp]
+        testComponents = [image, key_resp, sound_1]
         for thisComponent in testComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -672,6 +678,21 @@ for thisBlock in blocks:
                 if len(_key_resp_allKeys):
                     key_resp.keys = [key.name for key in _key_resp_allKeys]  # storing all keys
                     key_resp.rt = [key.rt for key in _key_resp_allKeys]
+            # start/stop sound_1
+            if sound_1.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                sound_1.frameNStart = frameN  # exact frame index
+                sound_1.tStart = t  # local t and not account for scr refresh
+                sound_1.tStartRefresh = tThisFlipGlobal  # on global time
+                sound_1.play(when=win)  # sync with win flip
+            if sound_1.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > sound_1.tStartRefresh + 0.1-frameTolerance:
+                    # keep track of stop time/frame for later
+                    sound_1.tStop = t  # not accounting for scr refresh
+                    sound_1.frameNStop = frameN  # exact frame index
+                    win.timeOnFlip(sound_1, 'tStopRefresh')  # time at next scr refresh
+                    sound_1.stop()
             
             # check for quit (typically the Esc key)
             if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -704,6 +725,9 @@ for thisBlock in blocks:
             trials.addData('key_resp.rt', key_resp.rt)
         trials.addData('key_resp.started', key_resp.tStartRefresh)
         trials.addData('key_resp.stopped', key_resp.tStopRefresh)
+        sound_1.stop()  # ensure sound has stopped at end of routine
+        trials.addData('sound_1.started', sound_1.tStartRefresh)
+        trials.addData('sound_1.stopped', sound_1.tStopRefresh)
         
         # ------Prepare to start Routine "post"-------
         continueRoutine = True
