@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2020.2.10),
-    on Sun Jan 17 18:03:17 2021
+    on Thu Jan 28 14:56:21 2021
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -30,6 +30,8 @@ from psychopy.hardware import keyboard
 
 # need pandas for dataframe functionality
 import pandas as pd
+# need serial for TTL generation
+import serial
 # excel file with image filenames and categories
 df_sm = pd.read_excel('stimuli.xlsx')
 # setup variables
@@ -46,6 +48,8 @@ numruns_opts = [z, z*2, z*4];
 numruns = numruns_opts[1];
 numtrls_tot = numtrls_tot_opts[3];
 numtrls_per = round(numtrls_tot/numruns);
+# open serial port
+ser = serial.Serial('/dev/tty.usbserial-AG0JFT5C', 19200, timeout = 1);
 
 
 # Ensure that relative paths start from the same directory as this script
@@ -693,6 +697,7 @@ for thisBlock in blocks:
                     sound_1.frameNStop = frameN  # exact frame index
                     win.timeOnFlip(sound_1, 'tStopRefresh')  # time at next scr refresh
                     sound_1.stop()
+            ser.dtr = not ser.dtr
             
             # check for quit (typically the Esc key)
             if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):

@@ -165,8 +165,8 @@
     </Routine>
     <Routine name="settings">
       <CodeComponent name="setup_imagedata">
-        <Param name="Before Experiment" updates="constant" val="# need pandas for dataframe functionality&amp;#10;import pandas as pd&amp;#10;# excel file with image filenames and categories&amp;#10;df_sm = pd.read_excel('stimuli.xlsx')&amp;#10;# setup variables&amp;#10;cats = df_sm.Category.unique();&amp;#10;nums = list(range(len(cats)));&amp;#10;## calculate numtrls_tot and numruns options&amp;#10;cz = len(df_sm.Num.unique());&amp;#10;z = round(cz/len(cats));&amp;#10;if cz != len(df_sm):&amp;#10;    print('Warning: more spreadsheet entries than unique image indices');&amp;#10;numtrls_tot_opts = [cz*4, cz*8, cz*12, cz*16];&amp;#10;numruns_opts = [z, z*2, z*4];&amp;#10;# set defaults&amp;#10;numruns = numruns_opts[1];&amp;#10;numtrls_tot = numtrls_tot_opts[3];&amp;#10;numtrls_per = round(numtrls_tot/numruns);" valType="extendedCode"/>
-        <Param name="Before JS Experiment" updates="constant" val="&amp;#10;        // add-on: list(s: string): string[]&amp;#10;        function list(s) {&amp;#10;            // if s is a string, we return a list of its characters&amp;#10;            if (typeof s === 'string')&amp;#10;                return s.split('');&amp;#10;            else&amp;#10;                // otherwise we return s:&amp;#10;                return s;&amp;#10;        }&amp;#10;&amp;#10;        import * as pd from 'pandas';&amp;#10;var cats, cz, df_sm, numruns, numruns_opts, nums, numtrls_per, numtrls_tot, numtrls_tot_opts, z;&amp;#10;df_sm = pd.read_excel(&quot;stimuli.xlsx&quot;);&amp;#10;cats = df_sm.Category.unique();&amp;#10;nums = list(range(cats.length));&amp;#10;cz = df_sm.Num.unique().length;&amp;#10;z = round((cz / cats.length));&amp;#10;if ((cz !== df_sm.length)) {&amp;#10;    console.log(&quot;Warning: more spreadsheet entries than unique image indices&quot;);&amp;#10;}&amp;#10;numtrls_tot_opts = [(cz * 4), (cz * 8), (cz * 12), (cz * 16)];&amp;#10;numruns_opts = [z, (z * 2), (z * 4)];&amp;#10;numruns = numruns_opts[1];&amp;#10;numtrls_tot = numtrls_tot_opts[3];&amp;#10;numtrls_per = round((numtrls_tot / numruns));&amp;#10;" valType="extendedCode"/>
+        <Param name="Before Experiment" updates="constant" val="# need pandas for dataframe functionality&amp;#10;import pandas as pd&amp;#10;# need serial for TTL generation&amp;#10;import serial&amp;#10;# excel file with image filenames and categories&amp;#10;df_sm = pd.read_excel('stimuli.xlsx')&amp;#10;# setup variables&amp;#10;cats = df_sm.Category.unique();&amp;#10;nums = list(range(len(cats)));&amp;#10;## calculate numtrls_tot and numruns options&amp;#10;cz = len(df_sm.Num.unique());&amp;#10;z = round(cz/len(cats));&amp;#10;if cz != len(df_sm):&amp;#10;    print('Warning: more spreadsheet entries than unique image indices');&amp;#10;numtrls_tot_opts = [cz*4, cz*8, cz*12, cz*16];&amp;#10;numruns_opts = [z, z*2, z*4];&amp;#10;# set defaults&amp;#10;numruns = numruns_opts[1];&amp;#10;numtrls_tot = numtrls_tot_opts[3];&amp;#10;numtrls_per = round(numtrls_tot/numruns);&amp;#10;# open serial port&amp;#10;#ser = serial.Serial('/dev/tty.usbserial-AG0JFT5C', 19200, timeout = 1);&amp;#10;#ser.dtr = False" valType="extendedCode"/>
+        <Param name="Before JS Experiment" updates="constant" val="&amp;#10;        // add-on: list(s: string): string[]&amp;#10;        function list(s) {&amp;#10;            // if s is a string, we return a list of its characters&amp;#10;            if (typeof s === 'string')&amp;#10;                return s.split('');&amp;#10;            else&amp;#10;                // otherwise we return s:&amp;#10;                return s;&amp;#10;        }&amp;#10;&amp;#10;        import * as pd from 'pandas';&amp;#10;import * as serial from 'serial';&amp;#10;var cats, cz, df_sm, numruns, numruns_opts, nums, numtrls_per, numtrls_tot, numtrls_tot_opts, z;&amp;#10;df_sm = pd.read_excel(&quot;stimuli.xlsx&quot;);&amp;#10;cats = df_sm.Category.unique();&amp;#10;nums = list(range(cats.length));&amp;#10;cz = df_sm.Num.unique().length;&amp;#10;z = round((cz / cats.length));&amp;#10;if ((cz !== df_sm.length)) {&amp;#10;    console.log(&quot;Warning: more spreadsheet entries than unique image indices&quot;);&amp;#10;}&amp;#10;numtrls_tot_opts = [(cz * 4), (cz * 8), (cz * 12), (cz * 16)];&amp;#10;numruns_opts = [z, (z * 2), (z * 4)];&amp;#10;numruns = numruns_opts[1];&amp;#10;numtrls_tot = numtrls_tot_opts[3];&amp;#10;numtrls_per = round((numtrls_tot / numruns));&amp;#10;" valType="extendedCode"/>
         <Param name="Begin Experiment" updates="constant" val="" valType="extendedCode"/>
         <Param name="Begin JS Experiment" updates="constant" val="" valType="extendedCode"/>
         <Param name="Begin JS Routine" updates="constant" val="tot_trials.markerPos = numtrls_tot;&amp;#10;exp_blocks.markerPos = 2;&amp;#10;" valType="extendedCode"/>
@@ -457,6 +457,23 @@
         <Param name="syncScreenRefresh" updates="constant" val="True" valType="bool"/>
         <Param name="volume" updates="constant" val="1" valType="code"/>
       </SoundComponent>
+      <CodeComponent name="code">
+        <Param name="Before Experiment" updates="constant" val="" valType="extendedCode"/>
+        <Param name="Before JS Experiment" updates="constant" val="" valType="extendedCode"/>
+        <Param name="Begin Experiment" updates="constant" val="" valType="extendedCode"/>
+        <Param name="Begin JS Experiment" updates="constant" val="" valType="extendedCode"/>
+        <Param name="Begin JS Routine" updates="constant" val="/* Syntax Error: Fix Python code */" valType="extendedCode"/>
+        <Param name="Begin Routine" updates="constant" val="#ser.dtr = True" valType="extendedCode"/>
+        <Param name="Code Type" updates="None" val="Auto-&gt;JS" valType="str"/>
+        <Param name="Each Frame" updates="constant" val="" valType="extendedCode"/>
+        <Param name="Each JS Frame" updates="constant" val="" valType="extendedCode"/>
+        <Param name="End Experiment" updates="constant" val="" valType="extendedCode"/>
+        <Param name="End JS Experiment" updates="constant" val="" valType="extendedCode"/>
+        <Param name="End JS Routine" updates="constant" val="/* Syntax Error: Fix Python code */" valType="extendedCode"/>
+        <Param name="End Routine" updates="constant" val="#ser.dtr = False" valType="extendedCode"/>
+        <Param name="disabled" updates="None" val="False" valType="bool"/>
+        <Param name="name" updates="None" val="code" valType="code"/>
+      </CodeComponent>
     </Routine>
     <Routine name="block_completed">
       <TextComponent name="completed_text">
