@@ -172,8 +172,8 @@
         <Param name="Begin JS Routine" updates="constant" val="tot_trials.markerPos = numtrls_tot;&amp;#10;exp_blocks.markerPos = 2;&amp;#10;" valType="extendedCode"/>
         <Param name="Begin Routine" updates="constant" val="# set defaults&amp;#10;tot_trials.markerPos = numtrls_tot;&amp;#10;exp_blocks.markerPos = 2;" valType="extendedCode"/>
         <Param name="Code Type" updates="None" val="Auto-&gt;JS" valType="str"/>
-        <Param name="Each Frame" updates="constant" val="# update numruns and numtrls based on input&amp;#10;if exp_blocks.getRating() is not None:&amp;#10;    numruns = numruns_opts[exp_blocks.getRating()];&amp;#10;if tot_trials.getRating() is not None:&amp;#10;    numtrls_tot = round(numtrls_tot_opts[tot_trials.getRating()])&amp;#10;    numtrls_per = round(numtrls_tot/numruns);" valType="extendedCode"/>
-        <Param name="Each JS Frame" updates="constant" val="if ((exp_blocks.getRating() !== null)) {&amp;#10;    numruns = numruns_opts[exp_blocks.getRating()];&amp;#10;}&amp;#10;if ((tot_trials.getRating() !== null)) {&amp;#10;    numtrls_tot = round(numtrls_tot_opts[tot_trials.getRating()]);&amp;#10;    numtrls_per = round((numtrls_tot / numruns));&amp;#10;}&amp;#10;" valType="extendedCode"/>
+        <Param name="Each Frame" updates="constant" val="# update numruns and numtrls based on input&amp;#10;if exp_blocks.getRating() is not None:&amp;#10;    numruns = numruns_opts[int(exp_blocks.getRating())];&amp;#10;if tot_trials.getRating() is not None:&amp;#10;    numtrls_tot = numtrls_tot_opts[int(tot_trials.getRating())];&amp;#10;    numtrls_per = int(numtrls_tot/numruns);&amp;#10;#    numtrls_per = int(numtrls_tot/numruns);" valType="extendedCode"/>
+        <Param name="Each JS Frame" updates="constant" val="if ((exp_blocks.getRating() !== null)) {&amp;#10;    numruns = numruns_opts[Number.parseInt(exp_blocks.getRating())];&amp;#10;}&amp;#10;if ((tot_trials.getRating() !== null)) {&amp;#10;    numtrls_tot = numtrls_tot_opts[Number.parseInt(tot_trials.getRating())];&amp;#10;    numtrls_per = Number.parseInt((numtrls_tot / numruns));&amp;#10;}&amp;#10;" valType="extendedCode"/>
         <Param name="End Experiment" updates="constant" val="" valType="extendedCode"/>
         <Param name="End JS Experiment" updates="constant" val="" valType="extendedCode"/>
         <Param name="End JS Routine" updates="constant" val="&amp;#10;        // add-on: list(s: string): string[]&amp;#10;        function list(s) {&amp;#10;            // if s is a string, we return a list of its characters&amp;#10;            if (typeof s === 'string')&amp;#10;                return s.split('');&amp;#10;            else&amp;#10;                // otherwise we return s:&amp;#10;                return s;&amp;#10;        }&amp;#10;&amp;#10;        split_list = function () {&amp;#10;    var _pj_a = [], _pj_b = list(range(numruns));&amp;#10;    for (var _pj_c = 0, _pj_d = _pj_b.length; (_pj_c &lt; _pj_d); _pj_c += 1) {&amp;#10;        var _ = _pj_b[_pj_c];&amp;#10;        _pj_a.push([]);&amp;#10;    }&amp;#10;    return _pj_a;&amp;#10;}&amp;#10;.call(this);&amp;#10;df = pd.concat(([df_sm] * round((numtrls_tot / df_sm.length))));&amp;#10;for (var x, _pj_c = 0, _pj_a = nums, _pj_b = _pj_a.length; (_pj_c &lt; _pj_b); _pj_c += 1) {&amp;#10;    x = _pj_a[_pj_c];&amp;#10;    loc = cats[x];&amp;#10;    subs = df[df.Category.str.match(loc)];&amp;#10;    numsubs = subs.length;&amp;#10;    div = round((numsubs / numruns));&amp;#10;    subsn = list(subs.index);&amp;#10;    shuffle(subsn);&amp;#10;    loclist = function () {&amp;#10;    var _pj_d = [], _pj_e = list(range(numruns));&amp;#10;    for (var _pj_f = 0, _pj_g = _pj_e.length; (_pj_f &lt; _pj_g); _pj_f += 1) {&amp;#10;        var i = _pj_e[_pj_f];&amp;#10;        _pj_d.push(subsn.slice((div * i), (div * (i + 1))));&amp;#10;    }&amp;#10;    return _pj_d;&amp;#10;}&amp;#10;.call(this);&amp;#10;    for (var n, _pj_f = 0, _pj_d = list(range(numruns)), _pj_e = _pj_d.length; (_pj_f &lt; _pj_e); _pj_f += 1) {&amp;#10;        n = _pj_d[_pj_f];&amp;#10;        split_list[n].extend(loclist[n]);&amp;#10;    }&amp;#10;}&amp;#10;for (var n, _pj_c = 0, _pj_a = list(range(numruns)), _pj_b = _pj_a.length; (_pj_c &lt; _pj_b); _pj_c += 1) {&amp;#10;    n = _pj_a[_pj_c];&amp;#10;    shuffle(split_list[n]);&amp;#10;}&amp;#10;" valType="extendedCode"/>
@@ -205,7 +205,7 @@
         <Param name="storeHistory" updates="constant" val="False" valType="bool"/>
         <Param name="storeRating" updates="constant" val="True" valType="bool"/>
         <Param name="storeRatingTime" updates="constant" val="True" valType="bool"/>
-        <Param name="styles" updates="constant" val="['rating']" valType="fixedList"/>
+        <Param name="styles" updates="constant" val="('rating',)" valType="fixedList"/>
         <Param name="syncScreenRefresh" updates="None" val="True" valType="bool"/>
         <Param name="ticks" updates="constant" val="[0, 1, 2, 3]" valType="list"/>
         <Param name="units" updates="None" val="from exp settings" valType="str"/>
@@ -234,7 +234,7 @@
         <Param name="storeHistory" updates="constant" val="False" valType="bool"/>
         <Param name="storeRating" updates="constant" val="True" valType="bool"/>
         <Param name="storeRatingTime" updates="constant" val="True" valType="bool"/>
-        <Param name="styles" updates="constant" val="['radio']" valType="fixedList"/>
+        <Param name="styles" updates="constant" val="('radio',)" valType="fixedList"/>
         <Param name="syncScreenRefresh" updates="None" val="True" valType="bool"/>
         <Param name="ticks" updates="constant" val="[0, 1, 2]" valType="list"/>
         <Param name="units" updates="None" val="from exp settings" valType="str"/>
@@ -547,7 +547,6 @@
     </Routine>
   </Routines>
   <Flow>
-    <Routine name="settings"/>
     <Routine name="instructions"/>
     <LoopInitiator loopType="TrialHandler" name="blocks">
       <Param name="Selected rows" updates="None" val="" valType="str"/>
