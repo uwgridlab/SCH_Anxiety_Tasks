@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2020.2.10),
-    on Thu Feb  4 18:53:06 2021
+    on Tue Mar  2 21:09:47 2021
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -28,6 +28,47 @@ import sys  # to get file system encoding
 
 from psychopy.hardware import keyboard
 
+# remove this code block when settings is fixed
+
+# need pandas for dataframe functionality
+import pandas as pd
+# need serial for TTL generation
+import serial
+# excel file with image filenames and categories
+df_sm = pd.read_excel('stimuli.xlsx')
+# setup variables
+cats = df_sm.Category.unique();
+nums = list(range(len(cats)));
+## calculate numtrls_tot and numruns options
+cz = len(df_sm.Num.unique());
+z = round(cz/len(cats));
+if cz != len(df_sm):
+    print('Warning: more spreadsheet entries than unique image indices');
+numtrls_tot_opts = [cz*4, cz*8, cz*12, cz*16];
+numruns_opts = [z, z*2, z*4];
+# set defaults
+numruns = numruns_opts[1];
+numtrls_tot = numtrls_tot_opts[3];
+numtrls_per = round(numtrls_tot/numruns);
+# open serial port
+#ser = serial.Serial('/dev/tty.usbserial-AG0JFT5C', 19200, timeout = 1);
+#ser.dtr = False
+
+# randomly split stimuli for blocks with even representation of categories per block
+split_list = [[] for _ in list(range(numruns))] # empty list of lists, where each list will ultimately represent a block
+df = pd.concat([df_sm]*round(numtrls_tot/len(df_sm))); # repeat the dataframe so the number of trials is correct
+for x in nums: # for each category
+    loc = cats[x];
+    subs = df[df.Category.str.match(loc)]; # subset of data in this category
+    numsubs = len(subs); # number of stimuli in this category
+    div = round(numsubs/numruns) # number of stimuli in this category to be put in each block
+    subsn = list(subs.index) # just get the image indices
+    shuffle(subsn); # randomize order
+    loclist = [subsn[div*i:div*(i+1)] for i in list(range(numruns))]; # split evenly in numruns lists with div values each
+    for n in list(range(numruns)): # for each block, add these stimuli to the list
+        split_list[n].extend(loclist[n])
+for n in list(range(numruns)): # after lists are constructed for each block, shuffle order of stimuli within each block
+    shuffle(split_list[n]);
 
 
 # Ensure that relative paths start from the same directory as this script

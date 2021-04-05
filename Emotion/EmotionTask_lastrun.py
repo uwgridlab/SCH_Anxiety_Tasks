@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2020.2.10),
-    on Thu Jan 28 14:56:21 2021
+    on Tue Mar  2 22:08:45 2021
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -28,6 +28,8 @@ import sys  # to get file system encoding
 
 from psychopy.hardware import keyboard
 
+# remove this code block when settings is fixed
+
 # need pandas for dataframe functionality
 import pandas as pd
 # need serial for TTL generation
@@ -50,6 +52,23 @@ numtrls_tot = numtrls_tot_opts[3];
 numtrls_per = round(numtrls_tot/numruns);
 # open serial port
 ser = serial.Serial('/dev/tty.usbserial-AG0JFT5C', 19200, timeout = 1);
+#ser.dtr = False
+
+# randomly split stimuli for blocks with even representation of categories per block
+split_list = [[] for _ in list(range(numruns))] # empty list of lists, where each list will ultimately represent a block
+df = pd.concat([df_sm]*round(numtrls_tot/len(df_sm))); # repeat the dataframe so the number of trials is correct
+for x in nums: # for each category
+    loc = cats[x];
+    subs = df[df.Category.str.match(loc)]; # subset of data in this category
+    numsubs = len(subs); # number of stimuli in this category
+    div = round(numsubs/numruns) # number of stimuli in this category to be put in each block
+    subsn = list(subs.index) # just get the image indices
+    shuffle(subsn); # randomize order
+    loclist = [subsn[div*i:div*(i+1)] for i in list(range(numruns))]; # split evenly in numruns lists with div values each
+    for n in list(range(numruns)): # for each block, add these stimuli to the list
+        split_list[n].extend(loclist[n])
+for n in list(range(numruns)): # after lists are constructed for each block, shuffle order of stimuli within each block
+    shuffle(split_list[n]);
 
 
 # Ensure that relative paths start from the same directory as this script
@@ -101,52 +120,6 @@ else:
 
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard()
-
-# Initialize components for Routine "settings"
-settingsClock = core.Clock()
-tot_trials = visual.Slider(win=win, name='tot_trials',
-    size=(1.0, 0.05), pos=(0, 0.25), units=None,
-    labels=[str(numtrls_tot_opts[i]) for i in list(range(4))], ticks=[0, 1, 2, 3],
-    granularity=1, style=['rating'],
-    color='black', font='HelveticaBold',
-    flip=False, depth=-1)
-exp_blocks = visual.Slider(win=win, name='exp_blocks',
-    size=(1.0, 0.05), pos=(0, 0), units=None,
-    labels=[str(numruns_opts[i]) for i in list(range(3))], ticks=[0, 1, 2],
-    granularity=1, style=['radio'],
-    color='black', font='HelveticaBold',
-    flip=False, depth=-2)
-trl_label = visual.TextStim(win=win, name='trl_label',
-    text='# of Trials (default ' + str(numtrls_tot_opts[3]) +')',
-    font='Arial',
-    pos=(0, .31), height=0.05, wrapWidth=None, ori=0, 
-    color='black', colorSpace='rgb', opacity=1, 
-    languageStyle='LTR',
-    depth=-3.0);
-block_label = visual.TextStim(win=win, name='block_label',
-    text='# of Blocks (default ' + str(numruns_opts[1]) + ')',
-    font='Arial',
-    pos=(0, 0.06), height=0.05, wrapWidth=None, ori=0, 
-    color='black', colorSpace='rgb', opacity=1, 
-    languageStyle='LTR',
-    depth=-4.0);
-report_label = visual.TextStim(win=win, name='report_label',
-    text='default text',
-    font='Arial',
-    pos=(0, -.2), height=0.05, wrapWidth=None, ori=0, 
-    color='black', colorSpace='rgb', opacity=1, 
-    languageStyle='LTR',
-    depth=-5.0);
-done = visual.TextStim(win=win, name='done',
-    text='DONE',
-    font='Arial',
-    pos=(0, -.35), height=0.05, wrapWidth=None, ori=0, 
-    color='red', colorSpace='rgb', opacity=1, 
-    languageStyle='LTR',
-    depth=-6.0);
-done_click = event.Mouse(win=win)
-x, y = [None, None]
-done_click.mouseClock = core.Clock()
 
 # Initialize components for Routine "instructions"
 instructionsClock = core.Clock()
@@ -223,185 +196,6 @@ complete_and_exit = visual.TextStim(win=win, name='complete_and_exit',
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
-
-# ------Prepare to start Routine "settings"-------
-continueRoutine = True
-# update component parameters for each repeat
-# set defaults
-tot_trials.markerPos = numtrls_tot;
-exp_blocks.markerPos = 2;
-tot_trials.reset()
-exp_blocks.reset()
-# setup some python lists for storing info about the done_click
-done_click.clicked_name = []
-gotValidClick = False  # until a click is received
-# keep track of which components have finished
-settingsComponents = [tot_trials, exp_blocks, trl_label, block_label, report_label, done, done_click]
-for thisComponent in settingsComponents:
-    thisComponent.tStart = None
-    thisComponent.tStop = None
-    thisComponent.tStartRefresh = None
-    thisComponent.tStopRefresh = None
-    if hasattr(thisComponent, 'status'):
-        thisComponent.status = NOT_STARTED
-# reset timers
-t = 0
-_timeToFirstFrame = win.getFutureFlipTime(clock="now")
-settingsClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
-frameN = -1
-
-# -------Run Routine "settings"-------
-while continueRoutine:
-    # get current time
-    t = settingsClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=settingsClock)
-    tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-    # update/draw components on each frame
-    # update numruns and numtrls based on input
-    if exp_blocks.getRating() is not None:
-        numruns = numruns_opts[exp_blocks.getRating()];
-    if tot_trials.getRating() is not None:
-        numtrls_tot = round(numtrls_tot_opts[tot_trials.getRating()])
-        numtrls_per = round(numtrls_tot/numruns);
-    
-    # *tot_trials* updates
-    if tot_trials.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-        # keep track of start time/frame for later
-        tot_trials.frameNStart = frameN  # exact frame index
-        tot_trials.tStart = t  # local t and not account for scr refresh
-        tot_trials.tStartRefresh = tThisFlipGlobal  # on global time
-        win.timeOnFlip(tot_trials, 'tStartRefresh')  # time at next scr refresh
-        tot_trials.setAutoDraw(True)
-    
-    # *exp_blocks* updates
-    if exp_blocks.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-        # keep track of start time/frame for later
-        exp_blocks.frameNStart = frameN  # exact frame index
-        exp_blocks.tStart = t  # local t and not account for scr refresh
-        exp_blocks.tStartRefresh = tThisFlipGlobal  # on global time
-        win.timeOnFlip(exp_blocks, 'tStartRefresh')  # time at next scr refresh
-        exp_blocks.setAutoDraw(True)
-    
-    # *trl_label* updates
-    if trl_label.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-        # keep track of start time/frame for later
-        trl_label.frameNStart = frameN  # exact frame index
-        trl_label.tStart = t  # local t and not account for scr refresh
-        trl_label.tStartRefresh = tThisFlipGlobal  # on global time
-        win.timeOnFlip(trl_label, 'tStartRefresh')  # time at next scr refresh
-        trl_label.setAutoDraw(True)
-    
-    # *block_label* updates
-    if block_label.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-        # keep track of start time/frame for later
-        block_label.frameNStart = frameN  # exact frame index
-        block_label.tStart = t  # local t and not account for scr refresh
-        block_label.tStartRefresh = tThisFlipGlobal  # on global time
-        win.timeOnFlip(block_label, 'tStartRefresh')  # time at next scr refresh
-        block_label.setAutoDraw(True)
-    
-    # *report_label* updates
-    if report_label.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-        # keep track of start time/frame for later
-        report_label.frameNStart = frameN  # exact frame index
-        report_label.tStart = t  # local t and not account for scr refresh
-        report_label.tStartRefresh = tThisFlipGlobal  # on global time
-        win.timeOnFlip(report_label, 'tStartRefresh')  # time at next scr refresh
-        report_label.setAutoDraw(True)
-    if report_label.status == STARTED:  # only update if drawing
-        report_label.setText(str(numtrls_tot) + ' total trials split among ' + str(numruns) + ' blocks for ' + str(numtrls_per) + ' trials per block.')
-    
-    # *done* updates
-    if done.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-        # keep track of start time/frame for later
-        done.frameNStart = frameN  # exact frame index
-        done.tStart = t  # local t and not account for scr refresh
-        done.tStartRefresh = tThisFlipGlobal  # on global time
-        win.timeOnFlip(done, 'tStartRefresh')  # time at next scr refresh
-        done.setAutoDraw(True)
-    # *done_click* updates
-    if done_click.status == NOT_STARTED and t >= 0.0-frameTolerance:
-        # keep track of start time/frame for later
-        done_click.frameNStart = frameN  # exact frame index
-        done_click.tStart = t  # local t and not account for scr refresh
-        done_click.tStartRefresh = tThisFlipGlobal  # on global time
-        win.timeOnFlip(done_click, 'tStartRefresh')  # time at next scr refresh
-        done_click.status = STARTED
-        done_click.mouseClock.reset()
-        prevButtonState = done_click.getPressed()  # if button is down already this ISN'T a new click
-    if done_click.status == STARTED:  # only update if started and not finished!
-        buttons = done_click.getPressed()
-        if buttons != prevButtonState:  # button state changed?
-            prevButtonState = buttons
-            if sum(buttons) > 0:  # state changed to a new click
-                # check if the mouse was inside our 'clickable' objects
-                gotValidClick = False
-                for obj in [done]:
-                    if obj.contains(done_click):
-                        gotValidClick = True
-                        done_click.clicked_name.append(obj.name)
-                if gotValidClick:  # abort routine on response
-                    continueRoutine = False
-    
-    # check for quit (typically the Esc key)
-    if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
-        core.quit()
-    
-    # check if all components have finished
-    if not continueRoutine:  # a component has requested a forced-end of Routine
-        break
-    continueRoutine = False  # will revert to True if at least one component still running
-    for thisComponent in settingsComponents:
-        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-            continueRoutine = True
-            break  # at least one component has not yet finished
-    
-    # refresh the screen
-    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-        win.flip()
-
-# -------Ending Routine "settings"-------
-for thisComponent in settingsComponents:
-    if hasattr(thisComponent, "setAutoDraw"):
-        thisComponent.setAutoDraw(False)
-# randomly split stimuli for blocks with even representation of categories per block
-split_list = [[] for _ in list(range(numruns))] # empty list of lists, where each list will ultimately represent a block
-df = pd.concat([df_sm]*round(numtrls_tot/len(df_sm))); # repeat the dataframe so the number of trials is correct
-for x in nums: # for each category
-    loc = cats[x];
-    subs = df[df.Category.str.match(loc)]; # subset of data in this category
-    numsubs = len(subs); # number of stimuli in this category
-    div = round(numsubs/numruns) # number of stimuli in this category to be put in each block
-    subsn = list(subs.index) # just get the image indices
-    shuffle(subsn); # randomize order
-    loclist = [subsn[div*i:div*(i+1)] for i in list(range(numruns))]; # split evenly in numruns lists with div values each
-    for n in list(range(numruns)): # for each block, add these stimuli to the list
-        split_list[n].extend(loclist[n])
-for n in list(range(numruns)): # after lists are constructed for each block, shuffle order of stimuli within each block
-    shuffle(split_list[n]);
-thisExp.addData('tot_trials.response', tot_trials.getRating())
-thisExp.addData('tot_trials.rt', tot_trials.getRT())
-thisExp.addData('tot_trials.started', tot_trials.tStartRefresh)
-thisExp.addData('tot_trials.stopped', tot_trials.tStopRefresh)
-thisExp.addData('exp_blocks.response', exp_blocks.getRating())
-thisExp.addData('exp_blocks.rt', exp_blocks.getRT())
-thisExp.addData('exp_blocks.started', exp_blocks.tStartRefresh)
-thisExp.addData('exp_blocks.stopped', exp_blocks.tStopRefresh)
-thisExp.addData('trl_label.started', trl_label.tStartRefresh)
-thisExp.addData('trl_label.stopped', trl_label.tStopRefresh)
-thisExp.addData('block_label.started', block_label.tStartRefresh)
-thisExp.addData('block_label.stopped', block_label.tStopRefresh)
-thisExp.addData('report_label.started', report_label.tStartRefresh)
-thisExp.addData('report_label.stopped', report_label.tStopRefresh)
-thisExp.addData('done.started', done.tStartRefresh)
-thisExp.addData('done.stopped', done.tStopRefresh)
-# store data for thisExp (ExperimentHandler)
-thisExp.addData('done_click.started', done_click.tStart)
-thisExp.addData('done_click.stopped', done_click.tStop)
-thisExp.nextEntry()
-# the Routine "settings" was not non-slip safe, so reset the non-slip timer
-routineTimer.reset()
 
 # ------Prepare to start Routine "instructions"-------
 continueRoutine = True
@@ -614,6 +408,7 @@ for thisBlock in blocks:
         _key_resp_allKeys = []
         sound_1.setSound('A', secs=0.1, hamming=True)
         sound_1.setVolume(1, log=False)
+        #ser.dtr = True
         # keep track of which components have finished
         testComponents = [image, key_resp, sound_1]
         for thisComponent in testComponents:
@@ -697,7 +492,6 @@ for thisBlock in blocks:
                     sound_1.frameNStop = frameN  # exact frame index
                     win.timeOnFlip(sound_1, 'tStopRefresh')  # time at next scr refresh
                     sound_1.stop()
-            ser.dtr = not ser.dtr
             
             # check for quit (typically the Esc key)
             if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -733,6 +527,7 @@ for thisBlock in blocks:
         sound_1.stop()  # ensure sound has stopped at end of routine
         trials.addData('sound_1.started', sound_1.tStartRefresh)
         trials.addData('sound_1.stopped', sound_1.tStopRefresh)
+        #ser.dtr = False
         
         # ------Prepare to start Routine "post"-------
         continueRoutine = True
